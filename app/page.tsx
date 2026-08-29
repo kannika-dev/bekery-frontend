@@ -1,6 +1,6 @@
-'use client';
-import { useState, useEffect } from 'react';
-import { Plus, Trash2, Edit, ShoppingBag, Store, Image as ImageIcon, X } from 'lucide-react';
+"use client";
+import React, { useState, useEffect } from "react";
+import { Sparkles, Plus, Edit2, Trash2, Utensils, Heart, CheckCircle, XCircle } from "lucide-react";
 
 interface BakeryItem {
   id: number;
@@ -8,32 +8,30 @@ interface BakeryItem {
   category: string;
   price: number;
   description: string;
-  image_url: string;
   is_available: number;
 }
 
-export default function BakeryApp() {
+export default function BakeryPage() {
   const [items, setItems] = useState<BakeryItem[]>([]);
   const [loading, setLoading] = useState(true);
-
-  // State สำหรับจัดการการแก้ไข
   const [editingId, setEditingId] = useState<number | null>(null);
 
-  // Form State
-  const [name, setName] = useState('');
-  const [category, setCategory] = useState('Cake');
-  const [price, setPrice] = useState('');
-  const [description, setDescription] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  // Form states
+  const [name, setName] = useState("");
+  const [category, setCategory] = useState("Cake");
+  const [price, setPrice] = useState("");
+  const [description, setDescription] = useState("");
+
+  const API_URL = "https://bekery-backend.onrender.com/api/bakery";
 
   const fetchItems = async () => {
     try {
-      const res = await fetch('https://bekery-backend.onrender.com');
+      setLoading(true);
+      const res = await fetch(API_URL);
       const data = await res.json();
       setItems(data);
     } catch (err) {
-      console.error('Error fetching bakery items:', err);
+      console.error("Fetch error:", err);
     } finally {
       setLoading(false);
     }
@@ -43,262 +41,218 @@ export default function BakeryApp() {
     fetchItems();
   }, []);
 
-  // เมื่อกดปุ่มแก้ไข ให้ดึงข้อมูลการ์ดนั้นมาใส่ในฟอร์ม
-  const handleEditClick = (item: BakeryItem) => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const payload = { name, category, price: Number(price), description, is_available: 1 };
+
+    try {
+      if (editingId) {
+        await fetch(`${API_URL}/${editingId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+      } else {
+        await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+      }
+      resetForm();
+      fetchItems();
+    } catch (err) {
+      alert("❌ เกิดข้อผิดพลาดในการบันทึก");
+    }
+  };
+
+  const handleEdit = (item: BakeryItem) => {
     setEditingId(item.id);
     setName(item.name);
     setCategory(item.category);
     setPrice(item.price.toString());
-    setDescription(item.description || '');
-    setImageUrl(item.image_url || '');
-  };
-
-  // ยกเลิกการแก้ไข
-  const handleCancelEdit = () => {
-    setEditingId(null);
-    setName('');
-    setPrice('');
-    setDescription('');
-    setImageUrl('');
-    setSelectedFile(null);
-  };
-
-  // ส่งข้อมูล (เพิ่มใหม่ หรือ อัปเดต)
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (editingId) {
-      // กรณีแก้ไข (Update)
-      try {
-        const res = await fetch(`https://bekery-backend.onrender.com/api/bakery/${editingId}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            name,
-            category,
-            price,
-            description,
-            is_available: 1
-          }),
-        });
-
-        if (res.ok) {
-          alert('✏️ แก้ไขข้อมูลสำเร็จ!');
-          handleCancelEdit();
-          fetchItems();
-        }
-      } catch (err) {
-        alert('❌ แก้ไขข้อมูลไม่สำเร็จ');
-      }
-    } else {
-      // กรณีเพิ่มใหม่ (Create)
-      const formData = new FormData();
-      formData.append('name', name);
-      formData.append('category', category);
-      formData.append('price', price);
-      formData.append('description', description);
-      formData.append('image_url', imageUrl);
-      if (selectedFile) formData.append('image', selectedFile);
-
-      try {
-        const res = await fetch('https://bekery-backend.onrender.com/api/bakery', {
-          method: 'POST',
-          body: formData,
-        });
-
-        if (res.ok) {
-          alert('✨ เพิ่มเมนูขนมเรียบร้อยแล้ว!');
-          handleCancelEdit();
-          fetchItems();
-        }
-      } catch (err) {
-        alert('❌ เกิดข้อผิดพลาดในการบันทึกข้อมูล');
-      }
-    }
+    setDescription(item.description);
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('คุณต้องการลบเมนูขนมนี้ใช่หรือไม่?')) return;
+    if (!confirm("คุณต้องการลบเมนูนี้ใช่ไหมคะ? 🥺")) return;
     try {
-      const res = await fetch(`https://bekery-backend.onrender.com/api/bakery/${id}`, {
-        method: 'DELETE',
-      });
+      const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
       if (res.ok) fetchItems();
     } catch (err) {
-      alert('❌ ลบเมนูไม่สำเร็จ');
+      alert("❌ ลบเมนูไม่สำเร็จ");
     }
   };
 
+  const resetForm = () => {
+    setEditingId(null);
+    setName("");
+    setCategory("Cake");
+    setPrice("");
+    setDescription("");
+  };
+
   return (
-    <div className="min-h-screen bg-amber-50/40 text-stone-800 p-6 font-sans">
-      <header className="max-w-6xl mx-auto flex justify-between items-center mb-10 pb-4 border-b border-amber-200">
-        <div className="flex items-center gap-3">
-          <div className="bg-amber-500 text-white p-2.5 rounded-2xl shadow-md">
-            <Store size={28} />
+    <div className="min-h-screen bg-rose-50/60 text-amber-950 font-sans pb-12">
+      {/* Header สดใส น่ารัก */}
+      <header className="bg-white/80 backdrop-blur-md sticky top-0 z-10 border-b border-rose-100 shadow-sm">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+          <div className="flex items-center gap-3 group cursor-pointer">
+            <div className="bg-rose-400 text-white p-2.5 rounded-2xl shadow-md group-hover:rotate-12 transition-transform duration-300">
+              <Sparkles className="w-6 h-6 animate-pulse" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-black bg-gradient-to-r from-rose-500 to-amber-600 bg-clip-text text-transparent">
+                Sweet Bakery Studio ✨
+              </h1>
+              <p className="text-xs text-rose-400 font-medium">ร้านเบเกอรี่อบสดใหม่ทุกวัน 🥐💗</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-2xl font-bold text-amber-900">Sweet & Warm Bakery</h1>
-            <p className="text-sm text-stone-500">ระบบจัดการคลังเมนูขนมเบเกอรี่</p>
-          </div>
-        </div>
-        <div className="bg-amber-100 px-4 py-2 rounded-xl text-amber-800 font-semibold text-sm flex items-center gap-2">
-          <ShoppingBag size={18} />
-          รวม {items.length} เมนู
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* ฝั่งฟอร์ม */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-amber-100 h-fit">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-bold text-amber-900 flex items-center gap-2">
-              {editingId ? <Edit size={20} className="text-amber-500" /> : <Plus size={20} className="text-amber-500" />}
-              {editingId ? 'แก้ไขเมนูขนม' : 'เพิ่มเมนูขนมใหม่'}
+      <main className="max-w-6xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-8 mt-4">
+        {/* ฝั่งฟอร์มเพิ่ม/แก้ไขเมนู */}
+        <div className="lg:col-span-1">
+          <div className="bg-white p-6 rounded-3xl shadow-xl shadow-rose-100/50 border border-rose-100 sticky top-24">
+            <h2 className="text-lg font-bold text-rose-600 mb-4 flex items-center gap-2">
+              <Heart className="w-5 h-5 fill-rose-400 text-rose-400" />
+              {editingId ? "แก้ไขเมนูขนมหวาน" : "เพิ่มเมนูใหม่สุดน่ารัก"}
             </h2>
-            {editingId && (
-              <button onClick={handleCancelEdit} className="text-xs text-rose-500 flex items-center gap-1 hover:underline">
-                <X size={14} /> ยกเลิก
-              </button>
-            )}
-          </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-xs font-semibold text-stone-600 mb-1">ชื่อขนม</label>
-              <input
-                type="text"
-                required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="เช่น Butter Croissant"
-                className="w-full px-3 py-2 text-sm border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-stone-600 mb-1">หมวดหมู่</label>
-                <select
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  className="w-full px-3 py-2 text-sm border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 bg-white"
-                >
-                  <option value="Cake">Cake</option>
-                  <option value="Bread">Bread</option>
-                  <option value="Pastry">Pastry</option>
-                  <option value="Cookie">Cookie</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-stone-600 mb-1">ราคา (บาท)</label>
+                <label className="block text-xs font-semibold text-amber-800 mb-1">ชื่อเมนูขนม</label>
                 <input
-                  type="number"
-                  step="0.01"
+                  type="text"
                   required
-                  value={price}
-                  onChange={(e) => setPrice(e.target.value)}
-                  placeholder="85.00"
-                  className="w-full px-3 py-2 text-sm border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400"
+                  placeholder="เช่น สตรอว์เบอร์รีชีสเค้ก"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl border border-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-300 transition-all text-sm bg-rose-50/30"
                 />
               </div>
-            </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-stone-600 mb-1">รายละเอียดขนม</label>
-              <textarea
-                rows={3}
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="รสชาติ ความนุ่ม หรือจุดเด่นของขนม..."
-                className="w-full px-3 py-2 text-sm border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 resize-none"
-              />
-            </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-amber-800 mb-1">หมวดหมู่</label>
+                  <select
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    className="w-full px-3 py-2.5 rounded-xl border border-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-300 transition-all text-sm bg-rose-50/30"
+                  >
+                    <option value="Cake">Cake 🍰</option>
+                    <option value="Bread">Bread 🍞</option>
+                    <option value="Cookie">Cookie 🍪</option>
+                    <option value="Drink">Drink 🧋</option>
+                  </select>
+                </div>
 
-            {!editingId && (
+                <div>
+                  <label className="block text-xs font-semibold text-amber-800 mb-1">ราคา (บาท)</label>
+                  <input
+                    type="number"
+                    required
+                    placeholder="89"
+                    value={price}
+                    onChange={(e) => setPrice(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl border border-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-300 transition-all text-sm bg-rose-50/30"
+                  />
+                </div>
+              </div>
+
               <div>
-                <label className="block text-xs font-semibold text-stone-600 mb-1">ลิงก์รูปภาพ (URL)</label>
-                <input
-                  type="url"
-                  value={imageUrl}
-                  onChange={(e) => setImageUrl(e.target.value)}
-                  placeholder="https://images.unsplash.com/..."
-                  className="w-full px-3 py-2 text-sm border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 mb-2"
-                />
-                <p className="text-[11px] text-stone-400 text-center mb-1">- หรืออัปโหลดไฟล์รูป -</p>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
-                  className="w-full text-xs text-stone-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-100 file:text-amber-700 hover:file:bg-amber-200 cursor-pointer"
+                <label className="block text-xs font-semibold text-amber-800 mb-1">รายละเอียดขนม</label>
+                <textarea
+                  rows={3}
+                  placeholder="อธิบายความอร่อยละมุน..."
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl border border-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-300 transition-all text-sm bg-rose-50/30"
                 />
               </div>
-            )}
 
-            <button
-              type="submit"
-              className={`w-full py-2.5 text-white font-semibold rounded-xl shadow-md transition-all text-sm mt-2 ${
-                editingId ? 'bg-amber-600 hover:bg-amber-700' : 'bg-amber-500 hover:bg-amber-600'
-              }`}
-            >
-              {editingId ? 'อัปเดตรายการขนม' : 'บันทึกรายการขนม'}
-            </button>
-          </form>
+              <div className="flex gap-2 pt-2">
+                <button
+                  type="submit"
+                  className="flex-1 bg-gradient-to-r from-rose-400 to-rose-500 hover:from-rose-500 hover:to-rose-600 text-white font-semibold py-2.5 px-4 rounded-xl shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 transition-all text-sm flex items-center justify-center gap-1.5"
+                >
+                  <Plus className="w-4 h-4" />
+                  {editingId ? "บันทึกการแก้ไข" : "เพิ่มเมนูเลย!"}
+                </button>
+                {editingId && (
+                  <button
+                    type="button"
+                    onClick={resetForm}
+                    className="bg-amber-100 hover:bg-amber-200 text-amber-800 font-semibold py-2.5 px-4 rounded-xl hover:scale-[1.02] active:scale-95 transition-all text-sm"
+                  >
+                    ยกเลิก
+                  </button>
+                )}
+              </div>
+            </form>
+          </div>
         </div>
 
-        {/* ฝั่งรายการขนม */}
-        <div className="lg:col-span-2">
-          <h2 className="text-lg font-bold text-amber-900 mb-4">รายการเมนูในระบบ</h2>
+        {/* ฝั่งแสดงรายการเมนูขนม */}
+        <div className="lg:col-span-2 space-y-4">
+          <div className="flex justify-between items-center mb-2">
+            <h2 className="text-xl font-bold text-amber-900 flex items-center gap-2">
+              เมนูทั้งหมดของเรา 🧁
+            </h2>
+            <span className="text-xs bg-rose-100 text-rose-600 font-bold px-3 py-1 rounded-full">
+              {items.length} รายการ
+            </span>
+          </div>
 
           {loading ? (
-            <p className="text-stone-400 text-sm">กำลังโหลดข้อมูลเมนู...</p>
+            <div className="text-center py-12 text-rose-400 font-medium animate-pulse">
+              กำลังอบขนมร้อนๆ กรุณารอสักครู่... 🥐
+            </div>
           ) : items.length === 0 ? (
-            <div className="bg-white p-8 rounded-2xl text-center text-stone-400 border border-amber-100">
-              ยังไม่มีรายการขนมในระบบ
+            <div className="bg-white/60 rounded-3xl p-12 text-center border border-rose-100">
+              <p className="text-amber-700">ยังไม่มีรายการขนมเลย ลองเพิ่มเมนูแรกดูสิคะ! ✨</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {items.map((item) => (
                 <div
                   key={item.id}
-                  className="bg-white rounded-2xl p-4 shadow-sm border border-amber-100 flex flex-col justify-between hover:shadow-md transition-shadow"
+                  className="bg-white p-5 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-rose-100/80 flex flex-col justify-between group"
                 >
                   <div>
-                    <div className="h-40 bg-stone-100 rounded-xl overflow-hidden mb-3 relative flex items-center justify-center">
-                      {item.image_url ? (
-                        <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
-                      ) : (
-                        <ImageIcon className="text-stone-300" size={32} />
-                      )}
-                      <span className="absolute top-2 right-2 bg-stone-900/60 backdrop-blur-sm text-white text-[11px] px-2 py-0.5 rounded-md font-medium">
+                    <div className="flex justify-between items-start mb-2">
+                      <span className="bg-rose-50 text-rose-500 text-xs font-bold px-2.5 py-1 rounded-lg border border-rose-100">
                         {item.category}
+                      </span>
+                      <span className="text-lg font-black text-rose-500">
+                        ฿{item.price}
                       </span>
                     </div>
 
-                    <div className="flex justify-between items-start mb-1">
-                      <h3 className="font-bold text-stone-800 text-base">{item.name}</h3>
-                      <span className="font-bold text-amber-600 text-sm">฿{Number(item.price).toFixed(2)}</span>
-                    </div>
-
-                    <p className="text-stone-500 text-xs line-clamp-2 mb-3">
-                      {item.description || 'ไม่มีคำอธิบายเพิ่มเติม'}
+                    <h3 className="font-bold text-lg text-amber-950 group-hover:text-rose-500 transition-colors">
+                      {item.name}
+                    </h3>
+                    <p className="text-amber-800/70 text-sm mt-1 line-clamp-2">
+                      {item.description || "ขนมหวานแสนอร่อย อบใหม่ใส่ใจทุกขั้นตอน 💕"}
                     </p>
                   </div>
 
-                  {/* ปุ่มแก้ไข และ ปุ่มลบ */}
-                  <div className="flex justify-end items-center gap-2 pt-2 border-t border-stone-100">
+                  {/* ปุ่มจัดการ Edit / Delete */}
+                  <div className="flex justify-end gap-2 mt-4 pt-3 border-t border-rose-50">
                     <button
-                      onClick={() => handleEditClick(item)}
-                      className="p-1.5 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors flex items-center gap-1 text-xs"
-                      title="แก้ไขรายการ"
+                      onClick={() => handleEdit(item)}
+                      className="p-2 text-amber-600 hover:bg-amber-50 rounded-xl hover:scale-110 active:scale-90 transition-all"
+                      title="แก้ไข"
                     >
-                      <Edit size={16} /> แก้ไข
+                      <Edit2 className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => handleDelete(item.id)}
-                      className="p-1.5 text-rose-500 hover:bg-rose-50 rounded-lg transition-colors"
-                      title="ลบรายการ"
+                      className="p-2 text-rose-500 hover:bg-rose-50 rounded-xl hover:scale-110 active:scale-90 transition-all"
+                      title="ลบ"
                     >
-                      <Trash2 size={16} />
+                      <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
