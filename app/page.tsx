@@ -73,10 +73,13 @@ export default function BakeryPage() {
     if (!user) {
       setPendingCartItem(item);
       setIsAuthOpen(true);
-      alert("กรุณาเข้าสู่ระบบก่อนทำการสั่งซื้อสินค้าค่ะ 🔒");
+      alert("⚠️ กรุณาเข้าสู่ระบบก่อนทำการสั่งซื้อสินค้าค่ะ 🔒");
       return;
     }
-    alert(`🛍️ ไปยังหน้ายืนยันคำสั่งซื้อเมนู: "${item.name}" (ราคา ฿${item.price}) สำหรับคุณ ${user.username}`);
+    
+    // เพิ่มสินค้าลงในตะกร้า (Cart)
+    setCart((prevCart) => [...prevCart, item]);
+    alert(`🛒 เพิ่มเมนู "${item.name}" ลงในตะกร้าเรียบร้อยแล้วค่ะ!`);
   };
 
   const handleInquiry = (item: BakeryItem) => {
@@ -375,8 +378,68 @@ export default function BakeryPage() {
 
         {/* 1. หน้าเลือกซื้อสินค้า (Marketplace View) */}
         {currentTab === "marketplace" && (
-          <div className="space-y-6">
-            <div className="bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 rounded-3xl p-6 md:p-8 text-white shadow-lg relative overflow-hidden flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="flex flex-col lg:flex-row gap-6 items-start">
+    
+    {/* 🛒 ฝั่งซ้าย: การ์ดตะกร้าสินค้าส่วนตัว */}
+    <div className="w-full lg:w-80 bg-white rounded-3xl p-5 shadow-lg border border-amber-100 sticky top-6 shrink-0">
+      <h3 className="text-base font-extrabold text-stone-800 mb-3 flex items-center justify-between border-b pb-3">
+        <span>🛒 ตะกร้าสินค้า</span>
+        <span className="bg-amber-100 text-amber-800 text-xs px-2 py-0.5 rounded-full font-bold">
+          {cart.length} รายการ
+        </span>
+      </h3>
+
+      {cart.length === 0 ? (
+        <div className="text-center py-6 text-stone-400">
+          <p className="text-2xl mb-1">🛍️</p>
+          <p className="text-xs">ยังไม่มีสินค้าในตะกร้า</p>
+        </div>
+      ) : (
+        <div>
+          <div className="space-y-2 mb-4 max-h-60 overflow-y-auto pr-1">
+            {cart.map((item, index) => (
+              <div key={index} className="flex justify-between items-center bg-stone-50 p-2.5 rounded-xl border border-stone-200">
+                <div>
+                  <h4 className="font-bold text-stone-800 text-xs">{item.name}</h4>
+                  <p className="text-[11px] text-amber-700 font-semibold">฿{item.price}</p>
+                </div>
+                <button 
+                  onClick={() => {
+                    const newCart = cart.filter((_, i) => i !== index);
+                    setCart(newCart);
+                  }}
+                  className="text-red-500 hover:text-red-700 text-xs font-semibold px-1.5 py-0.5"
+                >
+                  ลบ
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <div className="border-t pt-3 mb-4">
+            <div className="flex justify-between text-sm font-extrabold text-stone-800">
+              <span>ยอดรวมทั้งสิ้น:</span>
+              <span className="text-amber-700">
+                ฿{cart.reduce((sum, item) => sum + Number(item.price), 0)}
+              </span>
+            </div>
+          </div>
+
+          <button 
+            onClick={() => {
+              alert("🎉 ยืนยันคำสั่งซื้อสำเร็จ! เตรียมแนบสลิปการโอนเงินกันต่อเลยค่ะ 💸");
+              setCart([]);
+            }}
+            className="w-full bg-amber-600 hover:bg-amber-700 text-white py-2 rounded-xl font-bold shadow-md transition text-xs"
+          >
+            ยืนยันคำสั่งซื้อ
+          </button>
+        </div>
+      )}
+    </div>
+
+    {/* 🍰 ฝั่งขวา: เริ่มเนื้อหา Marketplace เดิม */}
+    <div className="flex-1 w-full space-y-6">            <div className="bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 rounded-3xl p-6 md:p-8 text-white shadow-lg relative overflow-hidden flex flex-col md:flex-row justify-between items-center gap-4">
               <div className="space-y-2 relative z-10 text-center md:text-left">
                 <span className="bg-white/25 text-white text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
                   Special Promotion 🎉
@@ -530,6 +593,7 @@ export default function BakeryPage() {
               </div>
             )}
           </div>
+          <div/>
         )}
 
         {/* 2. หน้าจัดการสินค้าสำหรับเจ้าของร้าน (Shop Management View) */}
