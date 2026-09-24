@@ -437,11 +437,8 @@ export default function BakeryPage() {
             >
               ยืนยันคำสั่งซื้อ
             </button>
-          </div>
-        )}
-      </div>
 
-      {/* 2. การ์ดจัดการสินค้า (แสดงเฉพาะผู้ขายหรือแอดมินที่ล็อกอินแล้วเท่านั้น!) */}
+            {/* 2. การ์ดจัดการสินค้า (แสดงเฉพาะผู้ขายหรือแอดมินที่ล็อกอินแล้วเท่านั้น!) */}
       {user && (user.role === "admin" || user.shopName) && (
         <div className="bg-white rounded-3xl p-5 shadow-lg border border-amber-200">
           <h3 className="text-base font-extrabold text-amber-950 mb-3 flex items-center gap-2 border-b pb-3">
@@ -534,6 +531,11 @@ export default function BakeryPage() {
         </div>
       )}
 
+          </div>
+        )}
+      </div>
+
+      
     </div>
 
 {/* 🍰 ฝั่งขวา: เริ่มเนื้อหา Marketplace เดิม */}
