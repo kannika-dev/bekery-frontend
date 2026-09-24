@@ -380,63 +380,161 @@ export default function BakeryPage() {
 {currentTab === "marketplace" && (
   <div className="flex flex-col lg:flex-row gap-6 items-start">
 
-{/* 🛒 ฝั่งซ้าย: การ์ดตะกร้าสินค้าส่วนตัว */}
-<div className="w-full lg:w-80 bg-white rounded-3xl p-5 shadow-lg border border-amber-100 sticky top-6 shrink-0">
-<h3 className="text-base font-extrabold text-stone-800 mb-3 flex items-center justify-between border-b pb-3">
-<span>🛒 ตะกร้าสินค้า</span>
-<span className="bg-amber-100 text-amber-800 text-xs px-2 py-0.5 rounded-full font-bold">
-  {cart.length} รายการ
-</span>
-</h3>
+{/* 🛒 ฝั่งซ้าย: รวมการ์ดตะกร้าสินค้า + กล่องจัดการสินค้าสำหรับผู้ขาย */}
+<div className="w-full lg:w-80 space-y-6 sticky top-6 shrink-0">
+      
+      {/* 1. การ์ดตะกร้าสินค้า (ทุกคนใช้งานได้) */}
+      <div className="bg-white rounded-3xl p-5 shadow-lg border border-amber-100">
+        <h3 className="text-base font-extrabold text-stone-800 mb-3 flex items-center justify-between border-b pb-3">
+          <span>🛒 ตะกร้าสินค้า</span>
+          <span className="bg-amber-100 text-amber-800 text-xs px-2 py-0.5 rounded-full font-bold">
+            {cart.length} รายการ
+          </span>
+        </h3>
 
-{cart.length === 0 ? (
-<div className="text-center py-6 text-stone-400">
-  <p className="text-2xl mb-1">🛍️</p>
-  <p className="text-xs">ยังไม่มีสินค้าในตะกร้า</p>
-</div>
-) : (
-<div>
-  <div className="space-y-2 mb-4 max-h-60 overflow-y-auto pr-1">
-    {cart.map((item, index) => (
-      <div key={index} className="flex justify-between items-center bg-stone-50 p-2.5 rounded-xl border border-stone-200">
-        <div>
-          <h4 className="font-bold text-stone-800 text-xs">{item.name}</h4>
-          <p className="text-[11px] text-amber-700 font-semibold">฿{item.price}</p>
-        </div>
-        <button 
-          onClick={() => {
-            const newCart = cart.filter((_, i) => i !== index);
-            setCart(newCart);
-          }}
-          className="text-red-500 hover:text-red-700 text-xs font-semibold px-1.5 py-0.5"
-        >
-          ลบ
-        </button>
+        {cart.length === 0 ? (
+          <div className="text-center py-6 text-stone-400">
+            <p className="text-2xl mb-1">🛍️</p>
+            <p className="text-xs">ยังไม่มีสินค้าในตะกร้า</p>
+          </div>
+        ) : (
+          <div>
+            <div className="space-y-2 mb-4 max-h-60 overflow-y-auto pr-1">
+              {cart.map((item, index) => (
+                <div key={index} className="flex justify-between items-center bg-stone-50 p-2.5 rounded-xl border border-stone-200">
+                  <div>
+                    <h4 className="font-bold text-stone-800 text-xs">{item.name}</h4>
+                    <p className="text-[11px] text-amber-700 font-semibold">฿{item.price}</p>
+                  </div>
+                  <button 
+                    onClick={() => {
+                      const newCart = cart.filter((_, i) => i !== index);
+                      setCart(newCart);
+                    }}
+                    className="text-red-500 hover:text-red-700 text-xs font-semibold px-1.5 py-0.5"
+                  >
+                    ลบ
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            <div className="border-t pt-3 mb-4">
+              <div className="flex justify-between text-sm font-extrabold text-stone-800">
+                <span>ยอดรวมทั้งสิ้น:</span>
+                <span className="text-amber-700">
+                  ฿{cart.reduce((sum, item) => sum + Number(item.price), 0)}
+                </span>
+              </div>
+            </div>
+
+            <button 
+              onClick={() => {
+                alert("🎉 ยืนยันคำสั่งซื้อสำเร็จ! เตรียมแนบสลิปการโอนเงินกันต่อเลยค่ะ 💸");
+                setCart([]);
+              }}
+              className="w-full bg-amber-600 hover:bg-amber-700 text-white py-2 rounded-xl font-bold shadow-md transition text-xs"
+            >
+              ยืนยันคำสั่งซื้อ
+            </button>
+          </div>
+        )}
       </div>
-    ))}
-  </div>
 
-  <div className="border-t pt-3 mb-4">
-    <div className="flex justify-between text-sm font-extrabold text-stone-800">
-      <span>ยอดรวมทั้งสิ้น:</span>
-      <span className="text-amber-700">
-        ฿{cart.reduce((sum, item) => sum + Number(item.price), 0)}
-      </span>
+      {/* 2. การ์ดจัดการสินค้า (แสดงเฉพาะผู้ขายหรือแอดมินที่ล็อกอินแล้วเท่านั้น!) */}
+      {user && (user.role === "admin" || user.shopName) && (
+        <div className="bg-white rounded-3xl p-5 shadow-lg border border-amber-200">
+          <h3 className="text-base font-extrabold text-amber-950 mb-3 flex items-center gap-2 border-b pb-3">
+            <Utensils className="w-4 h-4 text-amber-600" />
+            <span>{editingId ? "📝 แก้ไขเมนูร้านของคุณ" : "🧁 เพิ่มเมนูขนมใหม่"}</span>
+          </h3>
+
+          <form onSubmit={handleSubmit} className="space-y-3">
+            <div>
+              <label className="block text-[11px] font-semibold text-stone-600 mb-1">ชื่อเมนูขนม</label>
+              <input
+                type="text"
+                required
+                placeholder="เช่น เค้กส้มหนิ่ม"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full px-3 py-2 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-500/60 text-xs bg-amber-50/20"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="block text-[11px] font-semibold text-stone-600 mb-1">หมวดหมู่</label>
+                <select
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  className="w-full px-2 py-2 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-500/60 text-xs bg-amber-50/20"
+                >
+                  <option value="Cake">Cake 🍰</option>
+                  <option value="Bread">Bread 🍞</option>
+                  <option value="Cookie">Cookie 🍪</option>
+                  <option value="Drink">Drink 🧋</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-semibold text-stone-600 mb-1">ราคา (บาท)</label>
+                <input
+                  type="number"
+                  required
+                  placeholder="65"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                  className="w-full px-3 py-2 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-500/60 text-xs bg-amber-50/20"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-semibold text-stone-600 mb-1">ลิงก์รูปภาพสินค้า</label>
+              <input
+                type="text"
+                placeholder="https://..."
+                value={imageUrl}
+                onChange={(e) => setImageUrl(e.target.value)}
+                className="w-full px-3 py-2 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-500/60 text-xs bg-amber-50/30"
+              />
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-semibold text-stone-600 mb-1">รายละเอียด</label>
+              <textarea
+                rows={2}
+                placeholder="คำอธิบายสั้นๆ..."
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="w-full px-3 py-2 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-500/60 text-xs bg-amber-50/20"
+              />
+            </div>
+
+            <div className="flex gap-2 pt-1">
+              <button
+                type="submit"
+                className="flex-1 bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-3 rounded-xl shadow-xs transition-all text-xs flex items-center justify-center gap-1"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                {editingId ? "บันทึก" : "เพิ่มเมนู"}
+              </button>
+              {editingId && (
+                <button
+                  type="button"
+                  onClick={resetForm}
+                  className="bg-stone-200 hover:bg-stone-300 text-stone-700 font-bold py-2 px-3 rounded-xl transition-all text-xs"
+                >
+                  ยกเลิก
+                </button>
+              )}
+            </div>
+          </form>
+        </div>
+      )}
+
     </div>
-  </div>
-
-  <button 
-    onClick={() => {
-      alert("🎉 ยืนยันคำสั่งซื้อสำเร็จ! เตรียมแนบสลิปการโอนเงินกันต่อเลยค่ะ 💸");
-      setCart([]);
-    }}
-    className="w-full bg-amber-600 hover:bg-amber-700 text-white py-2 rounded-xl font-bold shadow-md transition text-xs"
-  >
-    ยืนยันคำสั่งซื้อ
-  </button>
-</div>
-)}
-</div>
 
 {/* 🍰 ฝั่งขวา: เริ่มเนื้อหา Marketplace เดิม */}
 <div className="flex-1 w-full space-y-6">           <div className="bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 rounded-3xl p-6 md:p-8 text-white shadow-lg relative overflow-hidden flex flex-col md:flex-row justify-between items-center gap-4">
