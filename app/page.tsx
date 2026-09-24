@@ -376,468 +376,467 @@ export default function BakeryPage() {
       {/* Main Content Area */}
       <main className="max-w-6xl mx-auto px-4 md:px-6">
 
-        {/* 1. หน้าเลือกซื้อสินค้า (Marketplace View) */}
-        {currentTab === "marketplace" && (
-          <div className="flex flex-col lg:flex-row gap-6 items-start">
-    
-    {/* 🛒 ฝั่งซ้าย: การ์ดตะกร้าสินค้าส่วนตัว */}
-    <div className="w-full lg:w-80 bg-white rounded-3xl p-5 shadow-lg border border-amber-100 sticky top-6 shrink-0">
-      <h3 className="text-base font-extrabold text-stone-800 mb-3 flex items-center justify-between border-b pb-3">
-        <span>🛒 ตะกร้าสินค้า</span>
-        <span className="bg-amber-100 text-amber-800 text-xs px-2 py-0.5 rounded-full font-bold">
-          {cart.length} รายการ
-        </span>
-      </h3>
+{/* 1. หน้าเลือกซื้อสินค้า (Marketplace View) */}
+{currentTab === "marketplace" && (
+  <div className="flex flex-col lg:flex-row gap-6 items-start">
 
-      {cart.length === 0 ? (
-        <div className="text-center py-6 text-stone-400">
-          <p className="text-2xl mb-1">🛍️</p>
-          <p className="text-xs">ยังไม่มีสินค้าในตะกร้า</p>
-        </div>
-      ) : (
+{/* 🛒 ฝั่งซ้าย: การ์ดตะกร้าสินค้าส่วนตัว */}
+<div className="w-full lg:w-80 bg-white rounded-3xl p-5 shadow-lg border border-amber-100 sticky top-6 shrink-0">
+<h3 className="text-base font-extrabold text-stone-800 mb-3 flex items-center justify-between border-b pb-3">
+<span>🛒 ตะกร้าสินค้า</span>
+<span className="bg-amber-100 text-amber-800 text-xs px-2 py-0.5 rounded-full font-bold">
+  {cart.length} รายการ
+</span>
+</h3>
+
+{cart.length === 0 ? (
+<div className="text-center py-6 text-stone-400">
+  <p className="text-2xl mb-1">🛍️</p>
+  <p className="text-xs">ยังไม่มีสินค้าในตะกร้า</p>
+</div>
+) : (
+<div>
+  <div className="space-y-2 mb-4 max-h-60 overflow-y-auto pr-1">
+    {cart.map((item, index) => (
+      <div key={index} className="flex justify-between items-center bg-stone-50 p-2.5 rounded-xl border border-stone-200">
         <div>
-          <div className="space-y-2 mb-4 max-h-60 overflow-y-auto pr-1">
-            {cart.map((item, index) => (
-              <div key={index} className="flex justify-between items-center bg-stone-50 p-2.5 rounded-xl border border-stone-200">
-                <div>
-                  <h4 className="font-bold text-stone-800 text-xs">{item.name}</h4>
-                  <p className="text-[11px] text-amber-700 font-semibold">฿{item.price}</p>
-                </div>
-                <button 
-                  onClick={() => {
-                    const newCart = cart.filter((_, i) => i !== index);
-                    setCart(newCart);
-                  }}
-                  className="text-red-500 hover:text-red-700 text-xs font-semibold px-1.5 py-0.5"
-                >
-                  ลบ
-                </button>
-              </div>
-            ))}
-          </div>
-
-          <div className="border-t pt-3 mb-4">
-            <div className="flex justify-between text-sm font-extrabold text-stone-800">
-              <span>ยอดรวมทั้งสิ้น:</span>
-              <span className="text-amber-700">
-                ฿{cart.reduce((sum, item) => sum + Number(item.price), 0)}
-              </span>
-            </div>
-          </div>
-
-          <button 
-            onClick={() => {
-              alert("🎉 ยืนยันคำสั่งซื้อสำเร็จ! เตรียมแนบสลิปการโอนเงินกันต่อเลยค่ะ 💸");
-              setCart([]);
-            }}
-            className="w-full bg-amber-600 hover:bg-amber-700 text-white py-2 rounded-xl font-bold shadow-md transition text-xs"
-          >
-            ยืนยันคำสั่งซื้อ
-          </button>
+          <h4 className="font-bold text-stone-800 text-xs">{item.name}</h4>
+          <p className="text-[11px] text-amber-700 font-semibold">฿{item.price}</p>
         </div>
-      )}
+        <button 
+          onClick={() => {
+            const newCart = cart.filter((_, i) => i !== index);
+            setCart(newCart);
+          }}
+          className="text-red-500 hover:text-red-700 text-xs font-semibold px-1.5 py-0.5"
+        >
+          ลบ
+        </button>
+      </div>
+    ))}
+  </div>
+
+  <div className="border-t pt-3 mb-4">
+    <div className="flex justify-between text-sm font-extrabold text-stone-800">
+      <span>ยอดรวมทั้งสิ้น:</span>
+      <span className="text-amber-700">
+        ฿{cart.reduce((sum, item) => sum + Number(item.price), 0)}
+      </span>
+    </div>
+  </div>
+
+  <button 
+    onClick={() => {
+      alert("🎉 ยืนยันคำสั่งซื้อสำเร็จ! เตรียมแนบสลิปการโอนเงินกันต่อเลยค่ะ 💸");
+      setCart([]);
+    }}
+    className="w-full bg-amber-600 hover:bg-amber-700 text-white py-2 rounded-xl font-bold shadow-md transition text-xs"
+  >
+    ยืนยันคำสั่งซื้อ
+  </button>
+</div>
+)}
+</div>
+
+{/* 🍰 ฝั่งขวา: เริ่มเนื้อหา Marketplace เดิม */}
+<div className="flex-1 w-full space-y-6">           <div className="bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 rounded-3xl p-6 md:p-8 text-white shadow-lg relative overflow-hidden flex flex-col md:flex-row justify-between items-center gap-4">
+      <div className="space-y-2 relative z-10 text-center md:text-left">
+        <span className="bg-white/25 text-white text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+          Special Promotion 🎉
+        </span>
+        <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight">เบเกอรี่โฮมเมดอบสดใหม่ทุกวัน ส่งตรงถึงมือคุณ!</h2>
+        <p className="text-amber-100 text-xs md:text-sm max-w-xl">เลือกซื้อขนมอร่อยจากหลากหลายร้านค้าพาร์ทเนอร์ หรือเปิดร้านของคุณเองได้ง่ายๆ แค่ปลายนิ้ว</p>
+      </div>
+      <button 
+        onClick={() => {
+          if(!user) setIsAuthOpen(true);
+          else setCurrentTab("manage");
+        }} 
+        className="bg-white text-amber-900 hover:bg-amber-50 font-extrabold px-6 py-3 rounded-2xl text-xs shadow-md transition-all active:scale-95 shrink-0 relative z-10"
+      >
+        {user ? "✨ ไปที่หน้าจัดการร้านของคุณ" : "🚀 สมัครเปิดร้านฟรีวันนี้"}
+      </button>
     </div>
 
-    {/* 🍰 ฝั่งขวา: เริ่มเนื้อหา Marketplace เดิม */}
-    <div className="flex-1 w-full space-y-6">            <div className="bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 rounded-3xl p-6 md:p-8 text-white shadow-lg relative overflow-hidden flex flex-col md:flex-row justify-between items-center gap-4">
-              <div className="space-y-2 relative z-10 text-center md:text-left">
-                <span className="bg-white/25 text-white text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-                  Special Promotion 🎉
+    <div className="flex justify-between items-center flex-wrap gap-2">
+      <h2 className="text-lg font-extrabold text-amber-950 flex items-center gap-2">
+        รายการเบเกอรี่ทั้งหมด
+        {selectedShopFilter && (
+          <span className="inline-flex items-center gap-1 bg-amber-200/90 text-amber-950 text-xs px-3 py-1 rounded-full font-bold shadow-2xs">
+            <Store className="w-3.5 h-3.5 text-amber-700" /> ร้าน: {selectedShopFilter}
+            <button 
+              onClick={() => setSelectedShopFilter(null)}
+              className="hover:text-red-600 transition-colors ml-1 p-0.5"
+              title="แสดงร้านค้าทั้งหมด"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </span>
+        )}
+      </h2>
+      <span className="text-xs bg-amber-200/80 text-amber-950 font-extrabold px-3.5 py-1.5 rounded-full shadow-2xs">
+        {filteredItems.length} รายการ
+      </span>
+    </div>
+
+    {loading ? (
+      <div className="text-center py-20 text-amber-800 font-bold animate-pulse bg-white/50 rounded-3xl border border-amber-200/60 shadow-xs">
+        กำลังโหลดเมนูความอร่อย... 🥐✨
+      </div>
+    ) : filteredItems.length === 0 ? (
+      <div className="bg-white/75 backdrop-blur-md rounded-3xl p-16 text-center border border-amber-200/60 shadow-xs space-y-3">
+        <p className="text-stone-500 font-medium">
+          {selectedShopFilter ? `ยังไม่มีเมนูสำหรับร้าน "${selectedShopFilter}"` : "ยังไม่มีรายการขนมในระบบ"}
+        </p>
+        {selectedShopFilter && (
+          <button onClick={() => setSelectedShopFilter(null)} className="text-xs text-amber-700 hover:underline font-bold bg-amber-100 px-4 py-2 rounded-xl inline-block">
+            ดูสินค้าจากทุกร้านค้า
+          </button>
+        )}
+      </div>
+    ) : (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {filteredItems.map((item) => (
+          <div
+            key={item.id}
+            className="bg-white/90 backdrop-blur-md p-5 rounded-3xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-amber-200/60 flex flex-col justify-between group overflow-hidden"
+          >
+            <div>
+              {item.image_url ? (
+                <div className="w-full h-48 mb-3.5 overflow-hidden rounded-2xl bg-amber-50 shadow-2xs">
+                  <img 
+                    src={item.image_url} 
+                    alt={item.name} 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+              ) : (
+                <div className="w-full h-36 mb-3.5 rounded-2xl bg-gradient-to-tr from-amber-100 to-orange-50 flex items-center justify-center text-amber-700/40 text-xs font-bold">
+                  ไม่มีรูปภาพประกอบ
+                </div>
+              )}
+
+              <div className="flex justify-between items-start mb-2 gap-2">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <span className="bg-amber-100/80 text-amber-900 text-xs font-bold px-2.5 py-1 rounded-xl border border-amber-200">
+                    {item.category}
+                  </span>
+
+                  {item.shopName && (
+                    <button
+                      onClick={() => setSelectedShopFilter(item.shopName || null)}
+                      className={`flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-xl border font-semibold transition-all ${
+                        selectedShopFilter === item.shopName
+                          ? "bg-amber-600 text-white border-amber-600 shadow-xs"
+                          : "bg-amber-50 text-amber-800 hover:bg-amber-100 border-amber-200"
+                      }`}
+                      title={`กรองดูสินค้าจากร้าน ${item.shopName}`}
+                    >
+                      <Store className="w-3 h-3" />
+                      {item.shopName}
+                    </button>
+                  )}
+                </div>
+
+                <span className="text-base font-extrabold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-xl">
+                  ฿{item.price}
                 </span>
-                <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight">เบเกอรี่โฮมเมดอบสดใหม่ทุกวัน ส่งตรงถึงมือคุณ!</h2>
-                <p className="text-amber-100 text-xs md:text-sm max-w-xl">เลือกซื้อขนมอร่อยจากหลากหลายร้านค้าพาร์ทเนอร์ หรือเปิดร้านของคุณเองได้ง่ายๆ แค่ปลายนิ้ว</p>
               </div>
-              <button 
-                onClick={() => {
-                  if(!user) setIsAuthOpen(true);
-                  else setCurrentTab("manage");
-                }} 
-                className="bg-white text-amber-900 hover:bg-amber-50 font-extrabold px-6 py-3 rounded-2xl text-xs shadow-md transition-all active:scale-95 shrink-0 relative z-10"
+
+              <h3 className="font-extrabold text-stone-900 text-base group-hover:text-amber-700 transition-colors">
+                {item.name}
+              </h3>
+              <p className="text-stone-500 text-xs mt-1.5 line-clamp-2 leading-relaxed">
+                {item.description || "ขนมหวานแสนอร่อย อบสดใหม่ใส่ใจทุกขั้นตอน 🥐"}
+              </p>
+            </div>
+
+            {/* ปุ่มการทำงาน 2 ปุ่มบนการ์ดสินค้า */}
+            <div className="flex items-center gap-2 mt-4 pt-3 border-t border-amber-100">
+              <button
+                onClick={() => handleBuyNow(item)}
+                className="flex-1 bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-3 rounded-xl transition-all text-xs flex items-center justify-center gap-1 shadow-2xs"
               >
-                {user ? "✨ ไปที่หน้าจัดการร้านของคุณ" : "🚀 สมัครเปิดร้านฟรีวันนี้"}
+                <ShoppingBag className="w-3.5 h-3.5" />
+                สั่งซื้อ / ใส่ตะกร้า
+              </button>
+              <button
+                onClick={() => handleInquiry(item)}
+                className="bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold py-2 px-3 rounded-xl transition-all text-xs flex items-center justify-center gap-1"
+                title="สอบถามร้านค้า / ดูรายละเอียด"
+              >
+                💬 สอบถาม
               </button>
             </div>
 
-            <div className="flex justify-between items-center flex-wrap gap-2">
-              <h2 className="text-lg font-extrabold text-amber-950 flex items-center gap-2">
-                รายการเบเกอรี่ทั้งหมด
-                {selectedShopFilter && (
-                  <span className="inline-flex items-center gap-1 bg-amber-200/90 text-amber-950 text-xs px-3 py-1 rounded-full font-bold shadow-2xs">
-                    <Store className="w-3.5 h-3.5 text-amber-700" /> ร้าน: {selectedShopFilter}
-                    <button 
-                      onClick={() => setSelectedShopFilter(null)}
-                      className="hover:text-red-600 transition-colors ml-1 p-0.5"
-                      title="แสดงร้านค้าทั้งหมด"
-                    >
-                      <X className="w-3.5 h-3.5" />
-                    </button>
-                  </span>
-                )}
-              </h2>
-              <span className="text-xs bg-amber-200/80 text-amber-950 font-extrabold px-3.5 py-1.5 rounded-full shadow-2xs">
-                {filteredItems.length} รายการ
-              </span>
-            </div>
-
-            {loading ? (
-              <div className="text-center py-20 text-amber-800 font-bold animate-pulse bg-white/50 rounded-3xl border border-amber-200/60 shadow-xs">
-                กำลังโหลดเมนูความอร่อย... 🥐✨
-              </div>
-            ) : filteredItems.length === 0 ? (
-              <div className="bg-white/75 backdrop-blur-md rounded-3xl p-16 text-center border border-amber-200/60 shadow-xs space-y-3">
-                <p className="text-stone-500 font-medium">
-                  {selectedShopFilter ? `ยังไม่มีเมนูสำหรับร้าน "${selectedShopFilter}"` : "ยังไม่มีรายการขนมในระบบ"}
-                </p>
-                {selectedShopFilter && (
-                  <button onClick={() => setSelectedShopFilter(null)} className="text-xs text-amber-700 hover:underline font-bold bg-amber-100 px-4 py-2 rounded-xl inline-block">
-                    ดูสินค้าจากทุกร้านค้า
-                  </button>
-                )}
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                {filteredItems.map((item) => (
-                  <div
-                    key={item.id}
-                    className="bg-white/90 backdrop-blur-md p-5 rounded-3xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-amber-200/60 flex flex-col justify-between group overflow-hidden"
-                  >
-                    <div>
-                      {item.image_url ? (
-                        <div className="w-full h-48 mb-3.5 overflow-hidden rounded-2xl bg-amber-50 shadow-2xs">
-                          <img 
-                            src={item.image_url} 
-                            alt={item.name} 
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                          />
-                        </div>
-                      ) : (
-                        <div className="w-full h-36 mb-3.5 rounded-2xl bg-gradient-to-tr from-amber-100 to-orange-50 flex items-center justify-center text-amber-700/40 text-xs font-bold">
-                          ไม่มีรูปภาพประกอบ
-                        </div>
-                      )}
-
-                      <div className="flex justify-between items-start mb-2 gap-2">
-                        <div className="flex items-center gap-1.5 flex-wrap">
-                          <span className="bg-amber-100/80 text-amber-900 text-xs font-bold px-2.5 py-1 rounded-xl border border-amber-200">
-                            {item.category}
-                          </span>
-
-                          {item.shopName && (
-                            <button
-                              onClick={() => setSelectedShopFilter(item.shopName || null)}
-                              className={`flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-xl border font-semibold transition-all ${
-                                selectedShopFilter === item.shopName
-                                  ? "bg-amber-600 text-white border-amber-600 shadow-xs"
-                                  : "bg-amber-50 text-amber-800 hover:bg-amber-100 border-amber-200"
-                              }`}
-                              title={`กรองดูสินค้าจากร้าน ${item.shopName}`}
-                            >
-                              <Store className="w-3 h-3" />
-                              {item.shopName}
-                            </button>
-                          )}
-                        </div>
-
-                        <span className="text-base font-extrabold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-xl">
-                          ฿{item.price}
-                        </span>
-                      </div>
-
-                      <h3 className="font-extrabold text-stone-900 text-base group-hover:text-amber-700 transition-colors">
-                        {item.name}
-                      </h3>
-                      <p className="text-stone-500 text-xs mt-1.5 line-clamp-2 leading-relaxed">
-                        {item.description || "ขนมหวานแสนอร่อย อบสดใหม่ใส่ใจทุกขั้นตอน 🥐"}
-                      </p>
-                    </div>
-
-                    {/* ปุ่มการทำงาน 2 ปุ่มบนการ์ดสินค้า */}
-                    <div className="flex items-center gap-2 mt-4 pt-3 border-t border-amber-100">
-                      <button
-                        onClick={() => handleBuyNow(item)}
-                        className="flex-1 bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-3 rounded-xl transition-all text-xs flex items-center justify-center gap-1 shadow-2xs"
-                      >
-                        <ShoppingBag className="w-3.5 h-3.5" />
-                        สั่งซื้อ / ใส่ตะกร้า
-                      </button>
-                      <button
-                        onClick={() => handleInquiry(item)}
-                        className="bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold py-2 px-3 rounded-xl transition-all text-xs flex items-center justify-center gap-1"
-                        title="สอบถามร้านค้า / ดูรายละเอียด"
-                      >
-                        💬 สอบถาม
-                      </button>
-                    </div>
-
-                    {/* ปุ่มจัดการสำหรับ Admin หรือ เจ้าของร้าน */}
-                    {(user?.role === "admin" || (user && item.shopName === user.shopName)) && (
-                      <div className="flex justify-end gap-1.5 mt-2 pt-2 border-t border-amber-50">
-                        <button
-                          onClick={() => handleEdit(item)}
-                          className="p-1.5 text-amber-700 hover:bg-amber-100 rounded-lg transition-all text-xs"
-                          title="แก้ไขเมนู"
-                        >
-                          <Edit2 className="w-3.5 h-3.5" />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(item)}
-                          className="p-1.5 text-stone-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all text-xs"
-                          title="ลบเมนู"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                ))}
+            {/* ปุ่มจัดการสำหรับ Admin หรือ เจ้าของร้าน */}
+            {(user?.role === "admin" || (user && item.shopName === user.shopName)) && (
+              <div className="flex justify-end gap-1.5 mt-2 pt-2 border-t border-amber-50">
+                <button
+                  onClick={() => handleEdit(item)}
+                  className="p-1.5 text-amber-700 hover:bg-amber-100 rounded-lg transition-all text-xs"
+                  title="แก้ไขเมนู"
+                >
+                  <Edit2 className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  onClick={() => handleDelete(item)}
+                  className="p-1.5 text-stone-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all text-xs"
+                  title="ลบเมนู"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
               </div>
             )}
           </div>
-          <div/>
-        )}
+        ))}
+      </div>
+    )}
+  </div>
+</div>
+)}
 
-        {/* 2. หน้าจัดการสินค้าสำหรับเจ้าของร้าน (Shop Management View) */}
-        {currentTab === "manage" && (
-          <div className="max-w-xl mx-auto">
-            <div className="bg-white/90 backdrop-blur-md p-6 md:p-8 rounded-3xl shadow-sm border border-amber-200/60">
-              <h2 className="text-lg font-extrabold text-amber-950 mb-4 flex items-center gap-2">
-                <Utensils className="w-5 h-5 text-amber-600" />
-                {editingId ? "แก้ไขรายการขนมของคุณ 📝" : "เพิ่มเมนูขนมใหม่เข้าสู่ระบบ 🧁"}
-              </h2>
+{/* 2. หน้าจัดการสินค้าสำหรับเจ้าของร้าน (Shop Management View) */}
+{currentTab === "manage" && (
+  <div className="max-w-xl mx-auto">
+    <div className="bg-white/90 backdrop-blur-md p-6 md:p-8 rounded-3xl shadow-sm border border-amber-200/60">
+      <h2 className="text-lg font-extrabold text-amber-950 mb-4 flex items-center gap-2">
+        <Utensils className="w-5 h-5 text-amber-600" />
+        {editingId ? "แก้ไขรายการขนมของคุณ 📝" : "เพิ่มเมนูขนมใหม่เข้าสู่ระบบ 🧁"}
+      </h2>
 
-              {!user ? (
-                <div className="bg-amber-50/80 border border-amber-200 rounded-2xl p-6 text-center space-y-4">
-                  <p className="text-xs text-amber-900 font-medium">กรุณาเข้าสู่ระบบก่อนจัดการเมนูขนมของร้านคุณค่ะ</p>
-                  <button
-                    onClick={() => setIsAuthOpen(true)}
-                    className="bg-amber-600 hover:bg-amber-700 text-white font-bold py-2.5 px-6 rounded-xl text-xs transition-all shadow-md"
-                  >
-                    เข้าสู่ระบบ / สมัครสมาชิก
-                  </button>
-                </div>
-              ) : (
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-stone-600 mb-1">ชื่อเมนูขนม</label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="เช่น เค้กส้มหนิ่ม, ครัวซองต์เนยสด"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-500/60 text-sm bg-amber-50/20"
-                    />
-                  </div>
+      {!user ? (
+        <div className="bg-amber-50/80 border border-amber-200 rounded-2xl p-6 text-center space-y-4">
+          <p className="text-xs text-amber-900 font-medium">กรุณาเข้าสู่ระบบก่อนจัดการเมนูขนมของร้านคุณค่ะ</p>
+          <button
+            onClick={() => setIsAuthOpen(true)}
+            className="bg-amber-600 hover:bg-amber-700 text-white font-bold py-2.5 px-6 rounded-xl text-xs transition-all shadow-md"
+          >
+            เข้าสู่ระบบ / สมัครสมาชิก
+          </button>
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-xs font-semibold text-stone-600 mb-1">ชื่อเมนูขนม</label>
+            <input
+              type="text"
+              required
+              placeholder="เช่น เค้กส้มหนิ่ม, ครัวซองต์เนยสด"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-500/60 text-sm bg-amber-50/20"
+            />
+          </div>
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs font-semibold text-stone-600 mb-1">หมวดหมู่</label>
-                      <select
-                        value={category}
-                        onChange={(e) => setCategory(e.target.value)}
-                        className="w-full px-3 py-3 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-500/60 text-sm bg-amber-50/20"
-                      >
-                        <option value="Cake">Cake 🍰</option>
-                        <option value="Bread">Bread 🍞</option>
-                        <option value="Cookie">Cookie 🍪</option>
-                        <option value="Drink">Drink 🧋</option>
-                      </select>
-                    </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-stone-600 mb-1">หมวดหมู่</label>
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full px-3 py-3 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-500/60 text-sm bg-amber-50/20"
+              >
+                <option value="Cake">Cake 🍰</option>
+                <option value="Bread">Bread 🍞</option>
+                <option value="Cookie">Cookie 🍪</option>
+                <option value="Drink">Drink 🧋</option>
+              </select>
+            </div>
 
-                    <div>
-                      <label className="block text-xs font-semibold text-stone-600 mb-1">ราคา (บาท)</label>
-                      <input
-                        type="number"
-                        required
-                        placeholder="65"
-                        value={price}
-                        onChange={(e) => setPrice(e.target.value)}
-                        className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-500/60 text-sm bg-amber-50/20"
-                      />
-                    </div>
-                  </div>
+            <div>
+              <label className="block text-xs font-semibold text-stone-600 mb-1">ราคา (บาท)</label>
+              <input
+                type="number"
+                required
+                placeholder="65"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-500/60 text-sm bg-amber-50/20"
+              />
+            </div>
+          </div>
 
-                  <div>
-                    <label className="block text-xs font-semibold text-stone-600 mb-1">
-                      รูปภาพสินค้า <span className="text-stone-400 font-normal">(อัปโหลดไฟล์ หรือ วางลิงก์)</span>
-                    </label>
-                    <div className="space-y-2">
-                      <input
-                        type="file"
-                        accept="image/jpeg, image/png, image/webp"
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file) {
-                            const reader = new FileReader();
-                            reader.onloadend = () => setImageUrl(reader.result as string);
-                            reader.readAsDataURL(file);
-                          }
-                        }}
-                        className="w-full text-xs text-stone-500 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-100 file:text-amber-800 hover:file:bg-amber-200 border border-stone-200 rounded-xl p-1"
-                      />
-                      <input
-                        type="text"
-                        placeholder="หรือวางลิงก์รูปภาพ https://..."
-                        value={imageUrl.startsWith("data:") ? "" : imageUrl}
-                        onChange={(e) => setImageUrl(e.target.value)}
-                        className="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-500/60 text-xs bg-amber-50/30"
-                      />
-                    </div>
-                    {imageUrl && (
-                      <div className="mt-2.5 relative w-24 h-24 rounded-2xl overflow-hidden border border-amber-200 shadow-xs">
-                        <img src={imageUrl} alt="Preview" className="w-full h-full object-cover" />
-                        <button
-                          type="button"
-                          onClick={() => setImageUrl("")}
-                          className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center shadow-xs"
-                        >
-                          ✕
-                        </button>
-                      </div>
-                    )}
-                  </div>
+          <div>
+            <label className="block text-xs font-semibold text-stone-600 mb-1">
+              รูปภาพสินค้า <span className="text-stone-400 font-normal">(อัปโหลดไฟล์ หรือ วางลิงก์)</span>
+            </label>
+            <div className="space-y-2">
+              <input
+                type="file"
+                accept="image/jpeg, image/png, image/webp"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    const reader = new FileReader();
+                    reader.onloadend = () => setImageUrl(reader.result as string);
+                    reader.readAsDataURL(file);
+                  }
+                }}
+                className="w-full text-xs text-stone-500 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-100 file:text-amber-800 hover:file:bg-amber-200 border border-stone-200 rounded-xl p-1"
+              />
+              <input
+                type="text"
+                placeholder="หรือวางลิงก์รูปภาพ https://..."
+                value={imageUrl.startsWith("data:") ? "" : imageUrl}
+                onChange={(e) => setImageUrl(e.target.value)}
+                className="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-500/60 text-xs bg-amber-50/30"
+              />
+            </div>
+            {imageUrl && (
+              <div className="mt-2.5 relative w-24 h-24 rounded-2xl overflow-hidden border border-amber-200 shadow-xs">
+                <img src={imageUrl} alt="Preview" className="w-full h-full object-cover" />
+                <button
+                  type="button"
+                  onClick={() => setImageUrl("")}
+                  className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center shadow-xs"
+                >
+                  ✕
+                </button>
+              </div>
+            )}
+          </div>
 
-                  <div>
-                    <label className="block text-xs font-semibold text-stone-600 mb-1">รายละเอียด</label>
-                    <textarea
-                      rows={3}
-                      placeholder="คำอธิบายสั้นๆ เกี่ยวกับขนม..."
-                      value={description}
-                      onChange={(e) => setDescription(e.target.value)}
-                      className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-500/60 text-sm bg-amber-50/20"
-                    />
-                  </div>
+          <div>
+            <label className="block text-xs font-semibold text-stone-600 mb-1">รายละเอียด</label>
+            <textarea
+              rows={3}
+              placeholder="คำอธิบายสั้นๆ เกี่ยวกับขนม..."
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-500/60 text-sm bg-amber-50/20"
+            />
+          </div>
 
-                  <div className="flex gap-3 pt-2">
-                    <button
-                      type="submit"
-                      className="flex-1 bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-4 rounded-xl shadow-md transition-all text-sm flex items-center justify-center gap-1.5"
+          <div className="flex gap-3 pt-2">
+            <button
+              type="submit"
+              className="flex-1 bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-4 rounded-xl shadow-md transition-all text-sm flex items-center justify-center gap-1.5"
+            >
+              <Plus className="w-4 h-4" />
+              {editingId ? "บันทึกการแก้ไข" : "เพิ่มเมนูใหม่"}
+            </button>
+            {editingId && (
+              <button
+                type="button"
+                onClick={resetForm}
+                className="bg-stone-200 hover:bg-stone-300 text-stone-700 font-bold py-3 px-4 rounded-xl transition-all text-sm"
+              >
+                ยกเลิก
+              </button>
+            )}
+          </div>
+        </form>
+      )}
+    </div>
+  </div>
+)}
+
+{/* 3. หน้าโฆษณา & โปรโมชันเด่น (Ads & Promotion View) */}
+{currentTab === "promotion" && (
+  <div className="space-y-6 max-w-4xl mx-auto">
+    <div className="bg-white/90 backdrop-blur-md p-8 rounded-3xl shadow-sm border border-amber-200/60 space-y-6">
+      <div className="border-b border-amber-100 pb-4">
+        <h2 className="text-xl font-extrabold text-amber-950 flex items-center gap-2">
+          <Megaphone className="w-6 h-6 text-amber-600" /> พื้นที่ประชาสัมพันธ์และโปรโมชันร้านค้า
+        </h2>
+        <p className="text-stone-500 text-xs mt-1">อัปเดตอีเวนต์ แคมเปญส่วนลด และเบเกอรี่ตัวท็อปประจำสัปดาห์</p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 p-6 rounded-3xl space-y-3">
+          <span className="bg-amber-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-full">HOT DEAL</span>
+          <h3 className="text-lg font-bold text-amber-950">🍰 เซตบอกรักต้อนรับเทศกาล</h3>
+          <p className="text-xs text-stone-600 leading-relaxed">
+            รวมเค้กช็อกโกแลตหนานุ่มและครัวซองต์เนยสดแท้จากฝรั่งเศส ซื้อคู่กันรับส่วนลดทันที 15% ทุกร้านค้าใน Hub!
+          </p>
+          <button onClick={() => setCurrentTab("marketplace")} className="text-xs text-amber-700 font-extrabold hover:underline inline-flex items-center gap-1">
+            ไปเลือกซื้อเลย ➔
+          </button>
+        </div>
+
+        <div className="bg-gradient-to-br from-orange-50 to-amber-50 border border-amber-200 p-6 rounded-3xl space-y-3">
+          <span className="bg-orange-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-full">PARTNER WANTED</span>
+          <h3 className="text-lg font-bold text-amber-950">🏪 เปิดร้านเบเกอรี่ฟรีไม่มีค่าใช้จ่าย</h3>
+          <p className="text-xs text-stone-600 leading-relaxed">
+            สำหรับเจ้าของร้านคาเฟ่หรือเบเกอรี่โฮมเมดที่ต้องการเพิ่มช่องทางขายออนไลน์ สมัครสมาชิกแล้วลงเมนูได้ทันที!
+          </p>
+          <button onClick={() => { if(!user) setIsAuthOpen(true); else setCurrentTab("manage"); }} className="text-xs text-orange-700 font-extrabold hover:underline inline-flex items-center gap-1">
+            {user ? "จัดการร้านของคุณ ➔" : "สมัครเปิดร้าน ➔"}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
+{/* 4. หน้า Admin Panel (จัดการผู้ใช้งาน) */}
+{user?.role === "admin" && currentTab === "admin_users" && (
+  <div className="bg-white/90 backdrop-blur-md p-6 md:p-8 rounded-3xl shadow-sm border border-amber-200/60">
+    <h2 className="text-xl font-extrabold text-amber-950 mb-4 flex items-center gap-2">
+      <ShieldAlert className="w-5 h-5 text-red-600" />
+      รายชื่อผู้ใช้งานทั้งหมดในระบบ (Admin Control Panel)
+    </h2>
+    <div className="overflow-x-auto">
+      <table className="w-full text-left border-collapse">
+        <thead>
+          <tr className="border-b border-amber-200 text-xs text-stone-500 bg-amber-50/50">
+            <th className="p-3">ID</th>
+            <th className="p-3">ชื่อผู้ใช้ (Username)</th>
+            <th className="p-3">สิทธิ์ (Role)</th>
+            <th className="p-3">ชื่อร้านค้า</th>
+            <th className="p-3 text-center">จัดการ</th>
+          </tr>
+        </thead>
+        <tbody className="text-sm">
+          {allUsers.length === 0 ? (
+            <tr>
+              <td colSpan={5} className="text-center py-8 text-stone-400">กำลังโหลดข้อมูลผู้ใช้...</td>
+            </tr>
+          ) : (
+            allUsers.map((u) => (
+              <tr key={u.id} className="border-b border-amber-100 hover:bg-amber-50/40">
+                <td className="p-3 text-stone-500">#{u.id}</td>
+                <td className="p-3 font-semibold text-stone-800">{u.username}</td>
+                <td className="p-3">
+                  <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold ${
+                    u.role === 'admin' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-800'
+                  }`}>
+                    {u.role}
+                  </span>
+                </td>
+                <td className="p-3 text-stone-600">{u.shopName || "-"}</td>
+                <td className="p-3 text-center">
+                  {u.id !== user.id && (
+                    <button 
+                      onClick={async () => {
+                        if(confirm(`ต้องการลบบัญชีผู้ใช้ ${u.username} ใช่หรือไม่?`)) {
+                          try {
+                            const token = localStorage.getItem("token");
+                            await fetch(`${USERS_API_URL}/${u.id}`, {
+                              method: "DELETE",
+                              headers: { Authorization: token ? `Bearer ${token}` : "" }
+                            });
+                            fetchAllUsers();
+                          } catch(err) { alert("ลบไม่สำเร็จ"); }
+                        }
+                      }}
+                      className="text-red-500 hover:text-red-700 p-1.5 rounded-lg hover:bg-red-50 transition-all"
+                      title="ลบผู้ใช้นี้"
                     >
-                      <Plus className="w-4 h-4" />
-                      {editingId ? "บันทึกการแก้ไข" : "เพิ่มเมนูใหม่"}
+                      <Trash2 className="w-4 h-4" />
                     </button>
-                    {editingId && (
-                      <button
-                        type="button"
-                        onClick={resetForm}
-                        className="bg-stone-200 hover:bg-stone-300 text-stone-700 font-bold py-3 px-4 rounded-xl transition-all text-sm"
-                      >
-                        ยกเลิก
-                      </button>
-                    )}
-                  </div>
-                </form>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* 3. หน้าโฆษณา & โปรโมชันเด่น (Ads & Promotion View) */}
-        {currentTab === "promotion" && (
-          <div className="space-y-6 max-w-4xl mx-auto">
-            <div className="bg-white/90 backdrop-blur-md p-8 rounded-3xl shadow-sm border border-amber-200/60 space-y-6">
-              <div className="border-b border-amber-100 pb-4">
-                <h2 className="text-xl font-extrabold text-amber-950 flex items-center gap-2">
-                  <Megaphone className="w-6 h-6 text-amber-600" /> พื้นที่ประชาสัมพันธ์และโปรโมชันร้านค้า
-                </h2>
-                <p className="text-stone-500 text-xs mt-1">อัปเดตอีเวนต์ แคมเปญส่วนลด และเบเกอรี่ตัวท็อปประจำสัปดาห์</p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 p-6 rounded-3xl space-y-3">
-                  <span className="bg-amber-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-full">HOT DEAL</span>
-                  <h3 className="text-lg font-bold text-amber-950">🍰 เซตบอกรักต้อนรับเทศกาล</h3>
-                  <p className="text-xs text-stone-600 leading-relaxed">
-                    รวมเค้กช็อกโกแลตหนานุ่มและครัวซองต์เนยสดแท้จากฝรั่งเศส ซื้อคู่กันรับส่วนลดทันที 15% ทุกร้านค้าใน Hub!
-                  </p>
-                  <button onClick={() => setCurrentTab("marketplace")} className="text-xs text-amber-700 font-extrabold hover:underline inline-flex items-center gap-1">
-                    ไปเลือกซื้อเลย ➔
-                  </button>
-                </div>
-
-                <div className="bg-gradient-to-br from-orange-50 to-amber-50 border border-amber-200 p-6 rounded-3xl space-y-3">
-                  <span className="bg-orange-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-full">PARTNER WANTED</span>
-                  <h3 className="text-lg font-bold text-amber-950">🏪 เปิดร้านเบเกอรี่ฟรีไม่มีค่าใช้จ่าย</h3>
-                  <p className="text-xs text-stone-600 leading-relaxed">
-                    สำหรับเจ้าของร้านคาเฟ่หรือเบเกอรี่โฮมเมดที่ต้องการเพิ่มช่องทางขายออนไลน์ สมัครสมาชิกแล้วลงเมนูได้ทันที!
-                  </p>
-                  <button onClick={() => { if(!user) setIsAuthOpen(true); else setCurrentTab("manage"); }} className="text-xs text-orange-700 font-extrabold hover:underline inline-flex items-center gap-1">
-                    {user ? "จัดการร้านของคุณ ➔" : "สมัครเปิดร้าน ➔"}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* 4. หน้า Admin Panel (จัดการผู้ใช้งาน) */}
-        {user?.role === "admin" && currentTab === "admin_users" && (
-          <div className="bg-white/90 backdrop-blur-md p-6 md:p-8 rounded-3xl shadow-sm border border-amber-200/60">
-            <h2 className="text-xl font-extrabold text-amber-950 mb-4 flex items-center gap-2">
-              <ShieldAlert className="w-5 h-5 text-red-600" />
-              รายชื่อผู้ใช้งานทั้งหมดในระบบ (Admin Control Panel)
-            </h2>
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="border-b border-amber-200 text-xs text-stone-500 bg-amber-50/50">
-                    <th className="p-3">ID</th>
-                    <th className="p-3">ชื่อผู้ใช้ (Username)</th>
-                    <th className="p-3">สิทธิ์ (Role)</th>
-                    <th className="p-3">ชื่อร้านค้า</th>
-                    <th className="p-3 text-center">จัดการ</th>
-                  </tr>
-                </thead>
-                <tbody className="text-sm">
-                  {allUsers.length === 0 ? (
-                    <tr>
-                      <td colSpan={5} className="text-center py-8 text-stone-400">กำลังโหลดข้อมูลผู้ใช้...</td>
-                    </tr>
-                  ) : (
-                    allUsers.map((u) => (
-                      <tr key={u.id} className="border-b border-amber-100 hover:bg-amber-50/40">
-                        <td className="p-3 text-stone-500">#{u.id}</td>
-                        <td className="p-3 font-semibold text-stone-800">{u.username}</td>
-                        <td className="p-3">
-                          <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold ${
-                            u.role === 'admin' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-800'
-                          }`}>
-                            {u.role}
-                          </span>
-                        </td>
-                        <td className="p-3 text-stone-600">{u.shopName || "-"}</td>
-                        <td className="p-3 text-center">
-                          {u.id !== user.id && (
-                            <button 
-                              onClick={async () => {
-                                if(confirm(`ต้องการลบบัญชีผู้ใช้ ${u.username} ใช่หรือไม่?`)) {
-                                  try {
-                                    const token = localStorage.getItem("token");
-                                    await fetch(`${USERS_API_URL}/${u.id}`, {
-                                      method: "DELETE",
-                                      headers: { Authorization: token ? `Bearer ${token}` : "" }
-                                    });
-                                    fetchAllUsers();
-                                  } catch(err) { alert("ลบไม่สำเร็จ"); }
-                                }
-                              }}
-                              className="text-red-500 hover:text-red-700 p-1.5 rounded-lg hover:bg-red-50 transition-all"
-                              title="ลบผู้ใช้นี้"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                          )}
-                        </td>
-                      </tr>
-                    ))
                   )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-      </main>
-
+                </td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
+    </div>
+  </div>
+)}
+</main>
       {/* Login / Auth Modal */}
       <LoginModal 
         isOpen={isAuthOpen} 
