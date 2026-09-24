@@ -380,7 +380,7 @@ export default function BakeryPage() {
 {currentTab === "marketplace" && (
   <div className="flex flex-col lg:flex-row gap-6 items-start">
 
-{/* 🛒 ฝั่งซ้าย: รวมการ์ดตะกร้าสินค้า + กล่องจัดการสินค้าสำหรับผู้ขาย */}
+{/* 🛒 ฝั่งซ้าย: รวมการ์ดตะกร้าสินค้า และกล่องจัดการสินค้าสำหรับผู้ขายแยกเป็นสัดส่วน */}
 <div className="w-full lg:w-80 space-y-6 sticky top-6 shrink-0">
       
       {/* 1. การ์ดตะกร้าสินค้า (ทุกคนใช้งานได้) */}
@@ -437,8 +437,11 @@ export default function BakeryPage() {
             >
               ยืนยันคำสั่งซื้อ
             </button>
+          </div>
+        )}
+      </div>
 
-            {/* 2. การ์ดจัดการสินค้า (แสดงเฉพาะผู้ขายหรือแอดมินที่ล็อกอินแล้วเท่านั้น!) */}
+      {/* 2. การ์ดจัดการสินค้า (แสดงเฉพาะผู้ขายหรือแอดมินที่ล็อกอินแล้วเท่านั้น!) */}
       {user && (user.role === "admin" || user.shopName) && (
         <div className="bg-white rounded-3xl p-5 shadow-lg border border-amber-200">
           <h3 className="text-base font-extrabold text-amber-950 mb-3 flex items-center gap-2 border-b pb-3">
@@ -531,12 +534,8 @@ export default function BakeryPage() {
         </div>
       )}
 
-          </div>
-        )}
-      </div>
-
-      
-    </div>
+</div>
+   
 
 {/* 🍰 ฝั่งขวา: เริ่มเนื้อหา Marketplace เดิม */}
 <div className="flex-1 w-full space-y-6">           <div className="bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 rounded-3xl p-6 md:p-8 text-white shadow-lg relative overflow-hidden flex flex-col md:flex-row justify-between items-center gap-4">
