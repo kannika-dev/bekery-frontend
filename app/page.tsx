@@ -491,14 +491,47 @@ export default function BakeryPage() {
             </div>
 
             <div>
-              <label className="block text-[11px] font-semibold text-stone-600 mb-1">ลิงก์รูปภาพสินค้า</label>
-              <input
-                type="text"
-                placeholder="https://..."
-                value={imageUrl}
-                onChange={(e) => setImageUrl(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-500/60 text-xs bg-amber-50/30"
-              />
+              <label className="block text-[11px] font-semibold text-stone-600 mb-1">
+                รูปภาพสินค้า <span className="text-stone-400 font-normal">(อัปโหลดไฟล์ หรือ วางลิงก์)</span>
+              </label>
+              
+              <div className="space-y-2">
+                <input
+                  type="file"
+                  accept="image/jpeg, image/png, image/webp"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onloadend = () => {
+                        setImageUrl(reader.result as string);
+                      };
+                      reader.readAsDataURL(file);
+                    }
+                  }}
+                  className="w-full text-xs text-stone-500 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-100 file:text-amber-800 hover:file:bg-amber-200 border border-stone-200 rounded-xl bg-amber-50/20 p-1"
+                />
+                <input
+                  type="text"
+                  placeholder="หรือวางลิงก์รูปภาพ https://..."
+                  value={imageUrl.startsWith("data:") ? "" : imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
+                  className="w-full px-3 py-2 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-500/60 text-xs bg-amber-50/20"
+                />
+              </div>
+
+              {imageUrl && (
+                <div className="mt-2 relative w-20 h-20 rounded-xl overflow-hidden border border-amber-200 shadow-2xs">
+                  <img src={imageUrl} alt="Preview" className="w-full h-full object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => setImageUrl("")}
+                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-4 h-4 text-[10px] flex items-center justify-center shadow-xs"
+                  >
+                    ✕
+                  </button>
+                </div>
+              )}
             </div>
 
             <div>
